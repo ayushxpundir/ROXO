@@ -1,0 +1,210 @@
+:root {
+    --bg: #0a0d0a;
+    --grid-line: #021309;
+    /* Subtle green-tinted line color */
+    --green: #39ff88;
+    --green-dim: #1f6b3f;
+    --panel: #10150f;
+    --border: #1f3326;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+/* Target the html or body element */
+html,
+body {
+
+    /* Hide scrollbar for Chrome, Safari, Edge, and Opera */
+    ::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* Hide scrollbar for IE, Edge, and Firefox */
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
+}
+
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--green);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px 16px 60px;
+    font-family: "Google Sans", sans-serif;
+    background-color: var(--bg);
+    background-image:
+        linear-gradient(var(--grid-line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+    background-size: 24px 24px;
+    /* Adjust this to make the grid boxes bigger or smaller */
+}
+
+
+h1 {
+    font-size: 1.1rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin: 0 0 4px;
+    color: var(--green);
+}
+
+.sub {
+    font-size: 0.75rem;
+    color: var(--green-dim);
+    margin-bottom: 20px;
+    letter-spacing: 0.1em;
+}
+
+.panel {
+    width: 100%;
+    max-width: 900px;
+    background: var(--panel);
+    border-radius: 4px;
+    padding: 16px;
+    margin-bottom: 16px;
+}
+
+.controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 16px;
+    flex-direction: column;
+    align-items: start;
+}
+
+.inco {
+    display: flex;
+    gap: 15px;
+}
+
+label {
+    font-size: 0.7rem;
+    color: var(--green-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    display: block;
+    margin-bottom: 4px;
+}
+
+input[type=file] {
+    color: var(--green);
+    font-size: 0.75rem;
+}
+
+input[type=file]::file-selector-button {
+    background-color: var(--bg);
+    /* Button background color */
+    color: var(--green);
+    /* Button text color */
+    font-size: 0.75rem;
+    /* Button font size */
+    border: 1px solid var(--border);
+    padding: 6px 12px;
+    border-radius: 2px;
+    cursor: pointer;
+    text-transform: uppercase;
+    font-family: inherit;
+    letter-spacing: 0.05em;
+    transition: background 0.15s, color 0.15s;
+}
+
+
+select {
+    background: var(--bg);
+    color: var(--green);
+    border: 1px solid var(--border);
+    padding: 4px 6px;
+    font-family: inherit;
+    font-size: 0.8rem;
+}
+
+button {
+    background: transparent;
+    border: 1px solid var(--green-dim);
+    color: var(--green);
+    padding: 8px 16px;
+    font-family: inherit;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: background 0.15s, color 0.15s;
+}
+
+button:hover {
+    background: var(--green);
+    color: var(--bg);
+}
+
+button:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+.ctrl-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.value-badge {
+    font-size: 0.7rem;
+    color: var(--green);
+    margin-left: 6px;
+}
+
+#asciiOutput {
+    /* 1. Force the output block to perfectly occupy 100% width of the panel */
+    width: 100%;
+    max-width: 100%;
+    display: none;
+    /* Toggled via JS play button state */
+    margin: 0px auto 0;
+    padding: 12px;
+    background: #000;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    height: fit-content;
+
+    /* FIX 1: MUST be left aligned. Centering triggers premature layout wrapping */
+    text-align: left;
+
+    /* 2. Micro spacing configurations for fluid 1:1 text alignments */
+    line-height: 1.0;
+    letter-spacing: 0px;
+    font-weight: 900;
+    color: var(--green);
+
+    /* FIX 2: Force strict string rules to deny the browser wrapping permissions */
+    white-space: pre !important;
+    word-break: keep-all;
+    overflow-x: hidden;
+    /* Keeps edges perfectly boxed */
+    overflow-y: hidden;
+
+    /* 3. Uses crisp fixed pixel text dimensions for flawless, stable grids */
+    font-family: ui-monospace, 'Cascadia Code', 'Courier New', monospace;
+    font-size: 5px;
+
+}
+
+video,
+canvas {
+    display: none;
+}
+
+.hint {
+    font-size: 0.7rem;
+    color: var(--green-dim);
+    margin-top: 10px;
+    line-height: 1.5;
+}

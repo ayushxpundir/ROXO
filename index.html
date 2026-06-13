@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ROXO // ASCII Video Player</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&display=swap"
+    rel="stylesheet">
+  <link rel="shortcut icon" href="./assets/icon.png" type="image/png">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <h1>ROXO // ASCII // Video</h1>
+  <div class="sub">video → live text rendering, runs entirely in your browser</div>
+
+  <div class="panel">
+    <div class="controls">
+      <div class="inco">
+        <div class="ctrl-group">
+          <label>Source file</label>
+          <input type="file" id="fileInput" accept="video/*">
+        </div>
+
+        <div class="ctrl-group">
+          <label>Character set</label>
+          <select id="charsetSelect">
+            <option value="dense">Dense (10 levels)</option>
+            <option value="blocks">Block shading</option>
+            <option value="binary">Binary (0/1)</option>
+            <option value="minimal">Minimal</option>
+          </select>
+        </div>
+      </div>
+      <div class="ctrl-group">
+        <button id="playBtn" disabled>Play</button>
+      </div>
+    </div>
+
+    <div class="hint" id="status">Choose a video file to begin. Processing happens locally</div>
+  </div>
+
+  <div class="panel" style="padding:0; overflow-x:auto;">
+    <pre id="asciiOutput"></pre>
+  </div>
+
+  <video id="video" muted playsinline></video>
+  <canvas id="canvas"></canvas>
+
+  <script src="app.js"></script>
+
+</body>
+
+</html>
