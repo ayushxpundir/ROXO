@@ -209,3 +209,9 @@ canvas {
     margin-top: 10px;
     line-height: 1.5;
 }
+
+@media (max-width: 568px) {
+        .inco {
+            flex-direction: column;
+        }
+}
