@@ -70,5 +70,4 @@ Demonstration Media: Contains a sample background showcase loop edited by [lbz](
 
 ## License
 
-This project is open-source and free to adapt for personal, educational, or creative web portfolios.
-
+This project is open-source and available under the terms of the MIT License.
