@@ -10,6 +10,7 @@
 
 * {
     box-sizing: border-box;
+    color: inherit;
 }
 
 /* Target the html or body element */
