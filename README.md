@@ -51,7 +51,7 @@ To prevent standard text lines from breaking or wrapping early, a hidden `<span>
 
 ### 2. High-Speed Downscaling
 
-Processing full-resolution 1080p video streams in text is highly inefficient. The script renders the ongoing frame array into a hidden, microscopic HTML5 `<canvas>` bounding box (e.g., $154 \times 68$ pixels) matching the target character width.
+Processing full-resolution 1080p video streams in text is highly inefficient. The script renders the ongoing frame array into a hidden, microscopic HTML5 `<canvas>` bounding box (e.g., `154*68` pixels) matching the target character width.
 
 ### 3. Luminance-to-Character Matrix
 
