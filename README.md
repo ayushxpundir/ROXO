@@ -19,7 +19,7 @@ A high-performance, browser-based digital scanning application that translates l
 ```plaintext
 ├── index.html      
 ├── style.css  
-├── script.js    
+├── app.js    
 └── assets         
     └── image.png          
     └── icon.png          
