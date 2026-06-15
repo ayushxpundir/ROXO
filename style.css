@@ -75,7 +75,7 @@ h1 {
 .controls {
     display: flex;
     flex-wrap: wrap;
-    gap: 12px;
+    gap: 15px;
     align-items: center;
     margin-bottom: 16px;
     flex-direction: column;
@@ -150,6 +150,10 @@ button:hover {
 button:disabled {
     opacity: 0.35;
     cursor: not-allowed;
+}
+
+.inco {
+    gap: 16px;
 }
 
 .ctrl-group {

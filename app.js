@@ -5,7 +5,7 @@ const ctx = canvas.getContext('2d', { willReadFrequently: true });
 const output = document.getElementById('asciiOutput');
 const playBtn = document.getElementById('playBtn');
 const charsetSelect = document.getElementById('charsetSelect');
-const status = document.getElementById('status');
+const statusEl = document.getElementById('status'); // Renamed to remove warning
 
 const CHARSETS = {
     dense: ' .:-=+*#%@@',
@@ -18,15 +18,15 @@ let running = false;
 let rafId = null;
 let currentVideoUrl = null;
 
-// Caching configuration variables globally so the render loop doesn't recalculate them
+// Caching configuration variables globally
 let cachedCols = 0;
 let cachedRows = 0;
 let charMetrics = { width: 3.0, height: 5.0 };
 let availablePixelWidth = 0;
 
-// --- FPS METRIC TRACKING VARIABLES ---
+// FPS Metric tracking
 let lastFrameTime = performance.now();
-let fpsArray = []; // Stores recent frame times to provide a smooth, averaged FPS readout
+let fpsArray = [];
 
 function getCharDimensions() {
     const testSpan = document.createElement('span');
@@ -65,7 +65,11 @@ function calculateTargetGrid() {
     const vh = video.videoHeight;
     if (!vw || !vh || !availablePixelWidth) return;
 
-    const cols = Math.floor(availablePixelWidth / charMetrics.width);
+    // PERFORMANCE CEILING: Cap columns to protect CPU layout speeds on large displays
+    let cols = Math.floor(availablePixelWidth / charMetrics.width);
+    const MAX_COLS = 180; 
+    if (cols > MAX_COLS) cols = MAX_COLS;
+
     const videoAspectRatio = vh / vw;
     const charAspect = charMetrics.width / charMetrics.height;
     const rows = Math.max(1, Math.round(videoAspectRatio * cols * charAspect));
@@ -77,6 +81,14 @@ function calculateTargetGrid() {
             canvas.width = cols;
             canvas.height = rows;
         }
+
+        // --- DYNAMIC FONT SCALING ENGINE ---
+        const scaledCharWidth = availablePixelWidth / cols;
+        const scaledFontSize = scaledCharWidth / (charMetrics.width / 5); 
+
+        output.style.fontSize = `${scaledFontSize}px`;
+        output.style.lineHeight = '1.0';
+        output.style.width = '100%';
     }
 }
 
@@ -106,14 +118,14 @@ fileInput.addEventListener('change', (e) => {
     currentVideoUrl = URL.createObjectURL(file);
     video.src = currentVideoUrl;
     video.load();
-    status.textContent = 'Loading video…';
+    statusEl.textContent = 'Loading video…';
     playBtn.disabled = true;
 });
 
 video.addEventListener('loadeddata', () => {
     video.loop = true;
     updateLayoutMetrics();
-    status.textContent = 'Ready. Press Play.';
+    statusEl.textContent = 'Ready. Press Play.';
     playBtn.disabled = false;
 });
 
@@ -126,7 +138,6 @@ playBtn.addEventListener('click', () => {
         running = true;
         playBtn.textContent = 'Pause';
         
-        // Reset FPS timer on startup to avoid huge initial spikes
         lastFrameTime = performance.now();
         fpsArray = [];
         
@@ -142,26 +153,21 @@ playBtn.addEventListener('click', () => {
 function renderFrame() {
     if (!running) return;
 
-    // --- MEASURE FPS ---
+    // --- ACCURATE TIME-WINDOW FPS METRIC ---
     const now = performance.now();
     const delta = now - lastFrameTime;
     lastFrameTime = now;
 
-    // Avoid dividing by zero if frames execute instantly
     if (delta > 0) {
-        const currentFps = 1000 / delta;
-        fpsArray.push(currentFps);
-        
-        // Keep a rolling average of the last 30 frames so the text doesn't flicker wildly
-        if (fpsArray.length > 30) {
-            fpsArray.shift();
-        }
+        fpsArray.push(delta);
+        if (fpsArray.length > 30) fpsArray.shift();
     }
 
-    const averageFps = fpsArray.length > 0 
-        ? Math.round(fpsArray.reduce((a, b) => a + b, 0) / fpsArray.length) 
+    const averageDelta = fpsArray.length > 0 
+        ? fpsArray.reduce((a, b) => a + b, 0) / fpsArray.length 
         : 0;
-    // -------------------
+
+    const averageFps = averageDelta > 0 ? Math.round(1000 / averageDelta) : 0;
 
     if (cachedCols && cachedRows) {
         ctx.drawImage(video, 0, 0, cachedCols, cachedRows);
@@ -169,30 +175,30 @@ function renderFrame() {
         const frame = ctx.getImageData(0, 0, cachedCols, cachedRows).data;
         const charset = CHARSETS[charsetSelect.value];
         const ramp = charset.length - 1;
-
-        let str = '';
         const totalPixels = cachedCols * cachedRows;
 
+        let resultString = '';
+        
         for (let i = 0; i < totalPixels; i++) {
-            const idx = i * 4;
+            const idx = i << 2; 
             const r = frame[idx];
             const g = frame[idx + 1];
             const b = frame[idx + 2];
 
-            const brightness = (r * 0.299 + g * 0.587 + b * 0.114) / 255;
-            const gammaAdjusted = brightness * brightness;
-
-            const charIndex = (gammaAdjusted * ramp) | 0;
-            str += charset[charIndex];
+            const brightness = (r * 299 + g * 587 + b * 114) / 255000;
+            
+            const charIndex = Math.round(brightness * brightness * ramp);
+            
+            resultString += charset[charIndex] || charset[0];
 
             if ((i + 1) % cachedCols === 0) {
-                str += '\n';
+                resultString += '\n';
             }
         }
-        output.textContent = str;
         
-        // APPEND THE LIVE COUNTER TO THE STATUS BOX
-        status.textContent = `Playing characters: ${cachedCols}×${cachedRows}  | Performance: ${averageFps} FPS`;
+        output.textContent = resultString;
+        
+        statusEl.textContent = `Playing characters: ${cachedCols}×${cachedRows} | Average FPS : ${averageFps} FPS`;
     }
 
     rafId = requestAnimationFrame(renderFrame);
